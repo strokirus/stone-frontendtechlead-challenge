@@ -1,0 +1,59 @@
+<div class="row">
+  <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar" />
+</div>
+
+<Character character={character} settings={settings} translate_template={translate_template} printable={true} on:toggle="toggle()" />
+
+<Printable ref:printable>
+  <Character character={character} settings={settings} translate_template={translate_template} />
+</Printable>
+
+<Control settings={settings} translate_template={translate_template} on:random="random()" on:print="print()" on:toggle="toggle()"
+  on:settings="router('/settings')" />
+
+<script>
+  import Router from 'svelte-page';
+  import Storage from '@mamba/pos/api/storage.js';
+  import Http from '@mamba/pos/api/http.js';
+  import dictionary from '../helpers/translate.js';
+  import { selectCharacter } from '../helpers/utils.js';
+
+  export default {
+    components: {
+      AppBar: '@mamba/appbar/AppBar.html',
+      Printable: '@mamba/printable',
+      Character: '../components/Character.html',
+      Control: '../components/Control.html',
+    },
+    data() {
+      const settings = {
+        image: Storage.getItem('image'),
+        language: Storage.getItem('language'),
+      };
+
+      const character = selectCharacter(Storage, Http, Router);
+
+      return {
+        character,
+        settings,
+        translate_template: dictionary[settings.language],
+      };
+    },
+    methods: {
+      toggle() {
+        Storage.setItem('image', !Storage.getItem('image'));
+        this.set({ settings: { image: Storage.getItem('image') } });
+      },
+      router(route) {
+        Router.go(route);
+      },
+      print() {
+        this.refs.printable.print();
+      },
+      random() {
+        const newCharacter = selectCharacter(Storage, Http, Router);
+        this.set({ character: newCharacter });
+      },
+    },
+  };
+</script>

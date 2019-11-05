@@ -1,0 +1,51 @@
+<div class="settings">
+  <p>{translate_template.home.language_description}</p>
+  <div class="settings-language">
+    {#each languages as language}
+    {#if language.selected}
+    <img class="settings-flags" style="border: 4px solid rgb(149, 201, 63);" src={language.icon} alt={language.compact} />
+    {:else}
+    <img class="settings-flags" on:click="setLanguage(event)" src={language.icon} alt={language.compact} />
+    {/if}
+    {/each}
+  </div>
+</div>
+
+<script>
+  import Storage from '@mamba/pos/api/storage.js';
+
+  export default {
+    data() {
+      return {
+        languages: undefined,
+        translate_template: undefined,
+      };
+    },
+    methods: {
+      setLanguage(event) {
+        Storage.setItem('language', event.target.alt);
+        this._handlers.language[0]();
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  .settings-language {
+    display: grid;
+    width: 95%;
+    margin: 10px auto;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .settings-flags {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  p {
+    margin: 5px 0 0 0;
+    padding: 5px;
+    font-size: 14px;
+  }
+</style>

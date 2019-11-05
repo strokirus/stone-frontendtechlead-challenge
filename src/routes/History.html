@@ -1,0 +1,82 @@
+<div class="row">
+  <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar" />
+</div>
+
+<div class="home">
+  <p>{translate_template.history.title}</p>
+  {#each history as character}
+  <span>{character.name} | {character.last_view}</span>
+  {/each}
+
+  <Button size="full" on:click="router('/character')" shortcut="enter">
+    {translate_template.buttons.back}
+  </Button>
+</div>
+
+<script>
+  import Router from 'svelte-page';
+  import Storage from '@mamba/pos/api/storage.js';
+
+  import dictionary from '../helpers/translate.js';
+  import languagesDefault from '../helpers/settings-translate.js';
+  import { getInfoLanguage } from '../helpers/utils.js';
+
+  export default {
+    components: {
+      AppBar: '@mamba/appbar/AppBar.html',
+      Button: '@mamba/button',
+    },
+    data() {
+      const { language, languages } = getInfoLanguage(Storage, languagesDefault);
+      let history = Storage.getItem('history_characters');
+
+      const settings = {
+        image: Storage.getItem('image'),
+        language,
+      };
+
+      history = history.map(e => {
+        const date = new Date(e.last_view);
+        return {
+          name: e.name,
+          last_view: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`,
+        };
+      });
+
+      return {
+        languages,
+        history,
+        translate_template: dictionary[settings.language || 'en'],
+      };
+    },
+    methods: {
+      router(route) {
+        Router.go(route);
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  p {
+    padding: 10px;
+    font-size: 20px;
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  .home {
+    margin: 5px 10px;
+    font-size: 14px;
+  }
+
+  span {
+    margin: 5px 0;
+    padding: 5px;
+    font-size: 14px;
+    width: 100%;
+    display: block;
+  }
+
+</style>

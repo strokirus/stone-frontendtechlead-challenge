@@ -1,0 +1,88 @@
+<div class="row">
+  <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar" />
+</div>
+
+<div class="home">
+  <p>{translate_template.home.title}</p>
+  {#each translate_template.home.description as description}
+  <span>{description}</span>
+  {/each}
+
+  <Languages languages={languages} translate_template={translate_template} on:language="setLanguage(e)" />
+
+  <Button size="full" on:click="router('/character')" shortcut="enter">
+    {translate_template.buttons.procced}
+  </Button>
+</div>
+
+<script>
+  import Router from 'svelte-page';
+  import Http from '@mamba/pos/api/http.js';
+  import Storage from '@mamba/pos/api/storage.js';
+
+  import dictionary from '../helpers/translate.js';
+  import languagesDefault from '../helpers/settings-translate.js';
+  import { getCharacters, getInfoLanguage } from '../helpers/utils.js';
+
+  export default {
+    components: {
+      AppBar: '@mamba/appbar/AppBar.html',
+      Button: '@mamba/button',
+      Languages: '../components/Languages.html',
+    },
+    data() {
+      const { language, languages } = getInfoLanguage(Storage, languagesDefault);
+
+      const settings = {
+        image: Storage.getItem('image'),
+        language,
+      };
+
+      return {
+        languages,
+        translate_template: dictionary[settings.language || 'en'],
+      };
+    },
+    oncreate() {
+      Storage.setItem('language', 'en');
+      const auxLenCharacther = Storage.getItem('len_character');
+      getCharacters(auxLenCharacther, Storage, Http, false);
+    },
+    methods: {
+      router(route) {
+        Router.go(route);
+      },
+      setLanguage() {
+        const { language, languages } =
+          getInfoLanguage(Storage, languagesDefault);
+        this.set({ language });
+        this.set({ languages });
+        this.set({ translate_template: dictionary[language || 'en'] });
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  p {
+    padding: 10px;
+    font-size: 20px;
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  .home {
+    margin: 5px 10px;
+    font-size: 14px;
+  }
+
+  span {
+    margin: 5px 0;
+    padding: 5px;
+    font-size: 14px;
+    width: 100%;
+    display: block;
+  }
+
+</style>

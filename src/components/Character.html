@@ -1,0 +1,73 @@
+{#if character}
+<p>
+  {character.name}
+</p>
+
+{#if settings.image}
+<img src={character.img} alt={character.name} on:click="toggle()" />
+{/if}
+
+<span>
+  {translate_template.character.height}: {character.height}
+</span>
+
+<span>
+  {translate_template.character.mass}: {character.mass}
+</span>
+
+<span>
+  {translate_template.character.gender.title}: {translate_template.character.gender.type[character.gender]}
+</span>
+
+<span>
+  {translate_template.character.hair.title}: {translate_template.character.hair.color[character.hair_color]}
+</span>
+
+<span>
+  {translate_template.character.eye.title}: {translate_template.character.eye.color[character.eye_color]}
+</span>
+{/if}
+
+<script>
+  export default {
+    data() {
+      return {
+        character: undefined,
+        settings: undefined,
+        translate_template: undefined,
+      };
+    },
+    methods: {
+      toggle() {
+        this._handlers.toggle[0]();
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  p {
+    padding: 10px;
+    font-size: 20px;
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  span {
+    margin: 5px 20px;
+    padding: 5px;
+    font-size: 14px;
+    display: block;
+    clear: both;
+  }
+
+  img {
+    width: 80%;
+    display: block;
+    margin: 0 10%;
+    background-position: -7px -46px;
+    background-image: url(./assets/loading.gif);
+    min-height: 40%;
+  }
+</style>

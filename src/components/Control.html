@@ -1,0 +1,50 @@
+<div class="buttons">
+  <RoundIcon symbol="refresh" size="medium" alt={translate_template.buttons.print} on:click="random()" />
+
+  {#if !settings.image}
+  <RoundIcon symbol="eye" size="medium" alt={translate_template.buttons.show} on:click="toggle()" />
+  {/if}
+  {#if settings.image}
+  <RoundIcon symbol="eye-off" size="medium" alt={translate_template.buttons.hide} on:click="toggle()" />
+  {/if}
+
+  <RoundIcon symbol="printer" size="medium" alt={translate_template.buttons.print} on:click="print()" />
+
+  <RoundIcon symbol="settings" on:click="settings()" size="medium" alt={translate_template.buttons.print} />
+</div>
+
+<script>
+  export default {
+    components: {
+      RoundIcon: '@mamba/icon/Round.html',
+    },
+    data() {
+      return {
+        translate_template: undefined,
+        settings: undefined,
+      };
+    },
+    methods: {
+      random() {
+        this._handlers.random[0]();
+      },
+      settings() {
+        this._handlers.settings[0]();
+      },
+      toggle() {
+        this._handlers.toggle[0]();
+      },
+      print() {
+        this._handlers.print[0]();
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  .buttons {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-column-gap: 2%;
+  }
+</style>
