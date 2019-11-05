@@ -2,6 +2,7 @@
   <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar" />
 </div>
 
+{#if hasCharacter}
 <Character character={character} settings={settings} translate_template={translate_template} printable={true} on:toggle="toggle()" />
 
 <Printable ref:printable>
@@ -10,13 +11,18 @@
 
 <Control settings={settings} translate_template={translate_template} on:random="random()" on:print="print()" on:toggle="toggle()"
   on:settings="router('/settings')" />
+{:else}
+<p>
+  <span>{translate_template.loading}</span>
+</p>
+{/if}
 
 <script>
   import Router from 'svelte-page';
   import Storage from '@mamba/pos/api/storage.js';
   import Http from '@mamba/pos/api/http.js';
   import dictionary from '../helpers/translate.js';
-  import { selectCharacter } from '../helpers/utils.js';
+  import { selectCharacter, getCharacters } from '../helpers/utils.js';
 
   export default {
     components: {
@@ -27,19 +33,33 @@
     },
     data() {
       const settings = {
-        image: Storage.getItem('image'),
-        language: Storage.getItem('language'),
+        image: Storage.getItem('image') || false,
+        language: Storage.getItem('language') || 'en',
       };
 
-      const character = selectCharacter(Storage, Http, Router);
-
       return {
-        character,
+        character: undefined,
+        hasCharacter: false,
         settings,
         translate_template: dictionary[settings.language],
       };
     },
+    oncreate() {
+      this.selectCharacter();
+    },
     methods: {
+      async selectCharacter() {
+        const auxLenCharacther = Storage.getItem('len_character');
+
+        if (auxLenCharacther == null) {
+          await getCharacters(auxLenCharacther, Storage, Http, false);
+        }
+
+        const character = await selectCharacter(Storage, Http, Router);
+
+        this.set({ character });
+        this.set({ hasCharacter: true });
+      },
       toggle() {
         Storage.setItem('image', !Storage.getItem('image'));
         this.set({ settings: { image: Storage.getItem('image') } });
@@ -50,10 +70,26 @@
       print() {
         this.refs.printable.print();
       },
-      random() {
-        const newCharacter = selectCharacter(Storage, Http, Router);
-        this.set({ character: newCharacter });
+      async random() {
+        this.set({ hasCharacter: false });
+        const character = await selectCharacter(Storage, Http, Router);
+        this.set({ character });
+        this.set({ hasCharacter: true });
       },
     },
   };
 </script>
+
+<style type="text/postcss">
+  p {
+    display: table;
+    width: 100%;
+    height: 80%;
+  }
+
+  span {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+</style>

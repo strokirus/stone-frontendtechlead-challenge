@@ -11,8 +11,10 @@ const dictionary = {
       ],
       language_description: 'Please select your language:',
     },
+    loading: 'Loading...',
     history: {
       title: 'History',
+      clear: 'Clear history',
     },
     buttons: {
       random: 'Random',
@@ -87,8 +89,10 @@ const dictionary = {
       ],
       language_description: 'Favor selecionar sua lingua:',
     },
+    loading: 'Carregando...',
     history: {
       title: 'Histórico',
+      clear: 'Limpar histórico',
     },
     buttons: {
       random: 'Randômico',
@@ -163,8 +167,10 @@ const dictionary = {
       ],
       language_description: 'Por favor define tu idioma:',
     },
+    loading: 'Cargando...',
     history: {
       title: 'Historico',
+      clear: 'Limpiar historico',
     },
     buttons: {
       random: 'Al azar',

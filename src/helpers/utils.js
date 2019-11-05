@@ -32,7 +32,7 @@ export const formatRequest = (id = undefined) => {
 };
 
 export const requestApi = (request, storage, http, saveLen = false) => {
-  http
+  return http
     .send(request)
     .then(result => {
       let formatedCharacters = [];
@@ -52,6 +52,8 @@ export const requestApi = (request, storage, http, saveLen = false) => {
       }
 
       storage.setItem('cache_characters', formatedCharacters);
+
+      return true;
     })
     .catch(error => {
       console.error(error.status);
@@ -59,19 +61,28 @@ export const requestApi = (request, storage, http, saveLen = false) => {
     });
 };
 
-export const getCharacters = (auxLenCharacther, storage, http, random) => {
+export const getCharacters = async (
+  auxLenCharacther,
+  storage,
+  http,
+  random,
+) => {
   if (auxLenCharacther == null) {
-    requestApi(formatRequest(), storage, http, true);
-  } else {
-    requestApi(formatRequest(random), storage, http, false);
+    return requestApi(formatRequest(), storage, http, true);
   }
+  return requestApi(formatRequest(random), storage, http, false);
 };
 
-export const selectCharacter = (storage, http, router) => {
+export const selectCharacter = async (storage, http) => {
   try {
-    const cache = storage.getItem('cache_characters');
+    const cache = storage.getItem('cache_characters') || [];
     const allLengthCharacters = storage.getItem('len_character');
     const history = storage.getItem('history_characters') || [];
+
+    if (cache.length === 0) {
+      // eslint-disable-next-line no-throw-literal
+      throw 'no Cache';
+    }
 
     let randNumber = Math.floor(Math.random() * cache.length);
     let alreadyHas = [];
@@ -98,7 +109,7 @@ export const selectCharacter = (storage, http, router) => {
     return character;
   } catch (err) {
     console.error(err);
-    router.go('/');
+    getCharacters(null, storage, http);
   }
 };
 

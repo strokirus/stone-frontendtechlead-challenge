@@ -10,6 +10,10 @@
   <Button size="medium" on:click="router('/history')" shortcut="2">
     {translate_template.history.title}
   </Button>
+
+  <Button size="full" on:click="clearHistory()" shortcut="3">
+    {translate_template.history.clear}
+  </Button>
 </div>
 
 <script>
@@ -48,6 +52,10 @@
     methods: {
       router(route) {
         Router.go(route);
+      },
+      clearHistory() {
+        Storage.clear();
+        this.router('/');
       },
       setLanguage() {
         const { language, languages } =
