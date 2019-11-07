@@ -53,10 +53,16 @@
       router(route) {
         Router.go(route);
       },
+      /**
+       * Function to clear all of history saved in app and route to home
+       */      
       clearHistory() {
         Storage.clear();
         this.router('/');
       },
+      /**
+       * Function to return language and formated language based in user choise
+       */         
       setLanguage() {
         const { language, languages } =
           getInfoLanguage(Storage, languagesDefault);

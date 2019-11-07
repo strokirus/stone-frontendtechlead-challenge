@@ -11,4 +11,5 @@ dist/
 yarn-error.log
 npm-debug.log
 debug.log
+package-lock.json
 .directory

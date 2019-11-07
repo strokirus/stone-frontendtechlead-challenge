@@ -1,3 +1,8 @@
+/**
+ * Object with all buttons, home titles and descriptions used in APP
+ *
+ * @return {Object} All language information based in your compac form
+ */
 const dictionary = {
   en: {
     home: {

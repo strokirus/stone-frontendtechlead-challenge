@@ -1,3 +1,9 @@
+/**
+ * Format basic informations by character by Star Wars API
+ *
+ * @param character Object with all information by Star Wars API
+ * @return {Object} Format some information by Star Wars and just use necessary infos
+ */
 export const formatCharacter = character => ({
   id: character.url.split('/')[5],
   name: character.name,
@@ -17,6 +23,12 @@ export const formatCharacter = character => ({
   gender: character.gender,
 });
 
+/**
+ * Format Request to Star Wars API (if we want specific character or all with pagination)
+ *
+ * @param id Optional Id with specific character
+ * @return {Object} Request formatted to input in Star Wars API
+ */
 export const formatRequest = (id = undefined) => {
   return {
     url: `https://swapi.co/api/people/${id || ''}`,
@@ -31,6 +43,15 @@ export const formatRequest = (id = undefined) => {
   };
 };
 
+/**
+ * Function to request to Star Wars API
+ *
+ * @param request Object with auth, type and if we want only character or page of characters
+ * @param storage Storage using Mamba POS SDK API
+ * @param http HTTP using Mamba POS SDK API
+ * @param saveLen If we want store all characters or just return specific charavcter
+ * @return {Bool} Save cache_characters and update these (if new specific character was searched)
+ */
 export const requestApi = (request, storage, http, saveLen = false) => {
   return http
     .send(request)
@@ -58,9 +79,19 @@ export const requestApi = (request, storage, http, saveLen = false) => {
     .catch(error => {
       console.error(error.status);
       console.error(error.msg);
+      return false;
     });
 };
 
+/**
+ * Function to return characters in first search or specific test
+ *
+ * @param auxLenCharacther Length of all charater exist in Star Wars World (enabled bu Star Wars API)
+ * @param storage Storage using Mamba POS SDK API
+ * @param http HTTP using Mamba POS SDK API
+ * @param random What character id should be search
+ * @return {Promise} Promise with what parameters necessary for this request
+ */
 export const getCharacters = async (
   auxLenCharacther,
   storage,
@@ -73,6 +104,15 @@ export const getCharacters = async (
   return requestApi(formatRequest(random), storage, http, false);
 };
 
+/**
+ * Function to return characters in first search or specific test
+ *
+ * @param auxLenCharacther Length of all charater exist in Star Wars World (enabled bu Star Wars API)
+ * @param storage Storage using Mamba POS SDK API
+ * @param http HTTP using Mamba POS SDK API
+ * @param random What character id should be search
+ * @return {Promise} Promise with what parameters necessary for this request
+ */
 export const selectCharacter = async (storage, http) => {
   try {
     const cache = storage.getItem('cache_characters') || [];
@@ -113,6 +153,13 @@ export const selectCharacter = async (storage, http) => {
   }
 };
 
+/**
+ * Function to return what language is selected by user
+ *
+ * @param storage Storage using Mamba POS SDK API
+ * @param languagesDefault Dictionary with all languages are disponible
+ * @return {String, Object} {String with compacte language selected, Formatted rules of language }
+ */
 export const getInfoLanguage = (storage, languagesDefault) => {
   const language = storage.getItem('language') || 'en';
 

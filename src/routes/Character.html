@@ -1,5 +1,5 @@
 <div class="row">
-  <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar" />
+  <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar - Character" />
 </div>
 
 {#if hasCharacter}
@@ -48,6 +48,9 @@
       this.selectCharacter();
     },
     methods: {
+      /**
+       * Function to save character based in cache and first return
+       */
       async selectCharacter() {
         const auxLenCharacther = Storage.getItem('len_character');
 
@@ -60,16 +63,28 @@
         this.set({ character });
         this.set({ hasCharacter: true });
       },
+      /**
+       * Function to toggle image in character page
+       */      
       toggle() {
         Storage.setItem('image', !Storage.getItem('image'));
         this.set({ settings: { image: Storage.getItem('image') } });
       },
+      /**
+       * Function to router between pages
+       */
       router(route) {
         Router.go(route);
       },
+      /**
+       * Function to print character component
+       */
       print() {
         this.refs.printable.print();
       },
+      /**
+       * Function to select new character based in all is possibilities and show this
+       */      
       async random() {
         this.set({ hasCharacter: false });
         const character = await selectCharacter(Storage, Http, Router);

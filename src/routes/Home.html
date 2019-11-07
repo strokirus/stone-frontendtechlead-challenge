@@ -1,5 +1,5 @@
 <div class="row">
-  <AppBar bgColor="#95C93F" textColor="green" title="Mazz Bar" />
+  <AppBar bgColor="#95C93F" textColor="green" title="§" />
 </div>
 
 <div class="home">
@@ -52,6 +52,9 @@
       router(route) {
         Router.go(route);
       },
+      /**
+       * Function to return language and formated language based in user choise
+       */      
       setLanguage() {
         const { language, languages } =
           getInfoLanguage(Storage, languagesDefault);
